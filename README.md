@@ -37,7 +37,7 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
- <img src="/images/demo.gif" width="250" height="500"/>
+ <img src="/images/demo.gif" width="250" height="530"/>
 
 * Metronome app with a simplistic UI
 * Settings tab to allow basic customization
