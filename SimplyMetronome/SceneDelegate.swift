@@ -2,7 +2,7 @@
 //  SceneDelegate.swift
 //  SimplyMetronome
 //
-//  Created by Chris W on 3/3/23.
+//  Created by Mesiow on 3/3/23.
 //
 
 import UIKit
