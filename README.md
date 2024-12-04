@@ -39,9 +39,17 @@
 
  <img src="/images/demo.gif" width="250" height="530"/>
 
-* Metronome app with a simplistic UI
+* Metronome app with a minimilistic UI
+* Can change bpm and time signature
+* Can use sound and/or the phone torch to tick in time with the metronome
 * Settings tab to allow basic customization
-* Uses user defaults to persist basic settings data
+* User defaults to persist basic settings data
+
+## Frameworks used
+
+* UIKit w/ Interface Builder
+* AVFoundation
+* UserDefaults
 
 
 
