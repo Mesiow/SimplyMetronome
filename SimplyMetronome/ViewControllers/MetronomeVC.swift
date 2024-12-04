@@ -1,23 +1,16 @@
 //
-//  ViewController.swift
+//  MetronomeVC.swift
 //  SimplyMetronome
 //
-//  Created by Mesiow on 3/3/23.
+//  Created by Chris W on 12/4/24.
 //
 
 import UIKit
 import Foundation
 import AVFoundation
 
-class MetronomeSettings{
-    var flashOn : Bool = false;
-    var soundOn : Bool = true;
-    var downbeatSoundOn : Bool = true;
-    var backgroundModeOn : Bool = false;
-    var flipSoundsOn : Bool = false;
-}
 
-class ViewController: UIViewController {
+class MetronomeVC: UIViewController {
     @IBOutlet weak var lightButton: UIButton!
     @IBOutlet weak var audioButton: UIButton!
     @IBOutlet weak var playButton: UIButton!
@@ -45,7 +38,6 @@ class ViewController: UIViewController {
     let flashOffImage = UIImage(systemName: "lightbulb.slash.fill");
     
     let metronome = Metronome()
-    let torch = Torch();
     
     @IBOutlet weak var settingsNavBar: UINavigationBar!
     
@@ -115,7 +107,7 @@ class ViewController: UIViewController {
         if segue.identifier == "goToSettings" {
             let destinationVC = segue.destination as! SettingsViewController;
             destinationVC.metronomeSettings = metronomeSettings;
-            destinationVC.prevView = self;
+            destinationVC.delegate = self
         }
     }
     
@@ -148,7 +140,7 @@ class ViewController: UIViewController {
     func metronomeCallback() -> Void {
         if metronomeSettings.flashOn {
             torchSwitch.toggle();
-            torch.toggle(on: torchSwitch)
+            Torch.toggle(on: torchSwitch)
         }
     }
     
@@ -168,14 +160,14 @@ class ViewController: UIViewController {
     func lightDisabled(){
         metronomeSettings.flashOn = false;
         torchSwitch = false;
-        torch.toggle(on: false);
+        Torch.toggle(on: false);
         lightButton.setImage(flashOffImage, for: .normal);
     }
     
     func lightEnabled(){
         metronomeSettings.flashOn = true;
         torchSwitch = true;
-        torch.toggle(on: true);
+        Torch.toggle(on: true);
         lightButton.setImage(flashOnImage, for: .normal);
     }
     
@@ -220,11 +212,11 @@ class ViewController: UIViewController {
     func toggleLight(){
         if metronomeSettings.flashOn {
             torchSwitch = true;
-            torch.toggle(on: true);
+            Torch.toggle(on: true);
             lightButton.setImage(flashOnImage, for: .normal);
         }else{
             torchSwitch = false;
-            torch.toggle(on: false);
+            Torch.toggle(on: false);
             lightButton.setImage(flashOffImage, for: .normal);
         }
     }
@@ -310,30 +302,30 @@ class ViewController: UIViewController {
 }
 
 //plist persistence
-extension ViewController {
+extension MetronomeVC {
     func storeUserDefaults() {
         let userDefaults = UserDefaults.standard;
-        userDefaults.set(metronomeSettings.soundOn, forKey: "SoundOn");
-        userDefaults.set(metronomeSettings.flashOn, forKey: "FlashOn");
-        userDefaults.set(metronomeSettings.downbeatSoundOn, forKey:"DownbeatOn");
-        userDefaults.set(metronomeSettings.backgroundModeOn, forKey:"BackgroundOn");
-        userDefaults.set(metronomeSettings.flipSoundsOn, forKey: "FlipSoundsOn");
-        userDefaults.set(metronome.bpm, forKey: "Bpm");
+        userDefaults.set(metronomeSettings.soundOn, forKey: UserDefaultsKeys.sound);
+        userDefaults.set(metronomeSettings.flashOn, forKey: UserDefaultsKeys.flash);
+        userDefaults.set(metronomeSettings.downbeatSoundOn, forKey: UserDefaultsKeys.downbeat);
+        userDefaults.set(metronomeSettings.backgroundModeOn, forKey: UserDefaultsKeys.background);
+        userDefaults.set(metronomeSettings.flipSoundsOn, forKey: UserDefaultsKeys.flipSounds);
+        userDefaults.set(metronome.bpm, forKey: UserDefaultsKeys.bpm);
     }
     
     func loadUserDefaults(){
         let userDefaults = UserDefaults.standard;
-        metronomeSettings.soundOn = userDefaults.bool(forKey: "SoundOn");
-        metronomeSettings.flashOn = userDefaults.bool(forKey: "FlashOn");
-        metronomeSettings.downbeatSoundOn = userDefaults.bool(forKey: "DownbeatOn");
-        metronomeSettings.backgroundModeOn = userDefaults.bool(forKey: "BackgroundOn");
-        metronomeSettings.flipSoundsOn = userDefaults.bool(forKey: "FlipSoundsOn");
-        metronome.bpm = userDefaults.float(forKey: "Bpm");
+        metronomeSettings.soundOn = userDefaults.bool(forKey: UserDefaultsKeys.sound);
+        metronomeSettings.flashOn = userDefaults.bool(forKey: UserDefaultsKeys.flash);
+        metronomeSettings.downbeatSoundOn = userDefaults.bool(forKey: UserDefaultsKeys.downbeat);
+        metronomeSettings.backgroundModeOn = userDefaults.bool(forKey: UserDefaultsKeys.background);
+        metronomeSettings.flipSoundsOn = userDefaults.bool(forKey: UserDefaultsKeys.flipSounds);
+        metronome.bpm = userDefaults.float(forKey: UserDefaultsKeys.bpm);
     }
 }
 
-//Text field constraints
-extension ViewController : UITextFieldDelegate {
+//Text field text constraints
+extension MetronomeVC : UITextFieldDelegate {
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         var maxLength = 2;
         if textField == bpmTextField {

@@ -8,13 +8,7 @@
 import UIKit
 import Foundation
 
-struct Setting {
-    var img : UIImage;
-    var name: String;
-    var enabled : Bool = false;
-    var color: UIColor;
-    var id : Int;
-}
+
 
 class SettingsViewController : UIViewController {
     let cellIdentifier = "ReusableSettingCell"
@@ -22,7 +16,7 @@ class SettingsViewController : UIViewController {
     @IBOutlet weak var backNavBar: UINavigationBar!
     @IBOutlet weak var tableView: UITableView!
     
-    var prevView : ViewController?
+    var delegate: MetronomeVC!
     var metronomeSettings : MetronomeSettings!; //selected settings to send back to previous view or load from user defaults
     
     var settings : [Setting] = [];
@@ -50,8 +44,81 @@ class SettingsViewController : UIViewController {
     @IBAction func backButtonPressed(_ sender: UIBarButtonItem) {
         dismiss(animated: true, completion: nil);
     }
+    
+    func loadSwitchState(index: Int, cell: SettingCell){
+        //switch button to original state left off
+        switch settings[index].id {
+        case 100: //light
+            cell.settingSwitch.isOn = metronomeSettings.flashOn;
+           break;
+        case 200: //downbeat
+            cell.settingSwitch.isOn = metronomeSettings.downbeatSoundOn;
+           break;
+        case 300: //mute
+            cell.settingSwitch.isOn = metronomeSettings.soundOn;
+           break;
+        case 400:
+            cell.settingSwitch.isOn = metronomeSettings.backgroundModeOn;
+           break;
+        case 500:
+            cell.settingSwitch.isOn = metronomeSettings.flipSoundsOn;
+            break;
+           
+       default:
+           print("Switch Setting does not exist");
+        }
+    }
+    
+    func updateSetting(index: Int){
+        if settings[index].enabled {
+            switch(settings[index].id){
+             case 100: //light
+                delegate.lightEnabled();
+                break;
+             case 200: //downbeat
+                delegate.downBeatEnabled();
+                break;
+             case 300: //mute
+                delegate.soundEnabled();
+                break;
+             case 400:
+                delegate.backgroundEnabled();
+                break;
+            case 500:
+                delegate.flipSoundEnabled();
+                break;
+                
+            default:
+                print("Setting does not exist");
+            }
+        }else{
+            //disabled
+            switch(settings[index].id){
+             case 100: //light
+                delegate.lightDisabled();
+                break;
+             case 200: //downbeat
+                delegate.downBeatDisabled();
+                break;
+             case 300: //mute
+                delegate.soundDisabled();
+                break;
+             case 400:
+                delegate.backgroundDisabled();
+                break;
+            case 500:
+                delegate.flipSoundDisabled();
+                break;
+                
+            default:
+                print("Setting does not exist");
+            }
+        }
+        delegate.storeUserDefaults();
+    }
 }
 
+// MARK: - Table View Extension
 extension SettingsViewController : UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return settings.count + 1; //+1 to account for description of 1st option
@@ -95,77 +162,5 @@ extension SettingsViewController : UITableViewDelegate, UITableViewDataSource {
             return cell;
         }
         return cell;
-    }
-    
-    func loadSwitchState(index: Int, cell: SettingCell){
-        //switch button to original state left off
-        switch settings[index].id {
-        case 100: //light
-            cell.settingSwitch.isOn = metronomeSettings.flashOn;
-           break;
-        case 200: //downbeat
-            cell.settingSwitch.isOn = metronomeSettings.downbeatSoundOn;
-           break;
-        case 300: //mute
-            cell.settingSwitch.isOn = metronomeSettings.soundOn;
-           break;
-        case 400:
-            cell.settingSwitch.isOn = metronomeSettings.backgroundModeOn;
-           break;
-        case 500:
-            cell.settingSwitch.isOn = metronomeSettings.flipSoundsOn;
-            break;
-           
-       default:
-           print("Switch Setting does not exist");
-        }
-    }
-    
-    func updateSetting(index: Int){
-        if settings[index].enabled {
-            switch(settings[index].id){
-             case 100: //light
-                prevView?.lightEnabled();
-                break;
-             case 200: //downbeat
-                prevView?.downBeatEnabled();
-                break;
-             case 300: //mute
-                prevView?.soundEnabled();
-                break;
-             case 400:
-                prevView?.backgroundEnabled();
-                break;
-            case 500:
-                prevView?.flipSoundEnabled();
-                break;
-                
-            default:
-                print("Setting does not exist");
-            }
-        }else{
-            //disabled
-            switch(settings[index].id){
-             case 100: //light
-                prevView?.lightDisabled();
-                break;
-             case 200: //downbeat
-                prevView?.downBeatDisabled();
-                break;
-             case 300: //mute
-                prevView?.soundDisabled();
-                break;
-             case 400:
-                prevView?.backgroundDisabled();
-                break;
-            case 500:
-                prevView?.flipSoundDisabled();
-                break;
-                
-            default:
-                print("Setting does not exist");
-            }
-        }
-        prevView?.storeUserDefaults();
     }
 }

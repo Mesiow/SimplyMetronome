@@ -8,8 +8,8 @@
 import Foundation
 import AVFoundation
 
-class Torch {
-    func toggle(on: Bool) {
+struct Torch {
+   static func toggle(on: Bool) {
         guard let device = AVCaptureDevice.default(for: .video) else {
             return;
         }
