@@ -39,7 +39,6 @@ class MetronomeVC: UIViewController {
     
     let metronome = Metronome()
     
-    @IBOutlet weak var settingsNavBar: UINavigationBar!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -59,9 +58,7 @@ class MetronomeVC: UIViewController {
     }
     
     @objc func appMovedToBackground(){
-        if !metronomeSettings.backgroundModeOn {
-            stopMetronome();
-        }
+        stopMetronome();
     }
     
     func initDefaults(){
@@ -71,8 +68,6 @@ class MetronomeVC: UIViewController {
     
    
     func initUi(){
-        settingsNavBar.standardAppearance = UINavigationBar.appearance().standardAppearance;
-        
         tsView.layer.cornerRadius = 15;
         
         tsUpperTextField.delegate = self;
@@ -91,6 +86,9 @@ class MetronomeVC: UIViewController {
         lightButton.layer.cornerRadius = 15;
         
         bpmStepper.layer.cornerRadius = 15;
+        bpmStepper.backgroundColor = .clear
+        bpmStepper.setDecrementImage(bpmStepper.decrementImage(for: .normal), for: .normal)
+        bpmStepper.setIncrementImage(bpmStepper.incrementImage(for: .normal), for: .normal)
         bpmStepper.maximumValue = Double(bpmMaxCount);
         
         slider.minimumValue = 0;
@@ -98,7 +96,7 @@ class MetronomeVC: UIViewController {
         slider.setValue(metronome.bpm, animated: true);
     }
     
-    @IBAction func settingsButtonPressed(_ sender: UIBarButtonItem) {
+    @IBAction func settingsButtonPressed(_ sender: UIButton) {
         stopMetronome(); //forcefully stop metronome
         performSegue(withIdentifier: "goToSettings", sender: self);
     }
@@ -179,14 +177,6 @@ class MetronomeVC: UIViewController {
     func downBeatEnabled(){
         metronomeSettings.downbeatSoundOn = true;
         metronome.downbeat = true;
-    }
-    
-    func backgroundEnabled() {
-        metronomeSettings.backgroundModeOn = true;
-    }
-    
-    func backgroundDisabled(){
-        metronomeSettings.backgroundModeOn = false;
     }
     
     func flipSoundEnabled(){
@@ -308,7 +298,6 @@ extension MetronomeVC {
         userDefaults.set(metronomeSettings.soundOn, forKey: UserDefaultsKeys.sound);
         userDefaults.set(metronomeSettings.flashOn, forKey: UserDefaultsKeys.flash);
         userDefaults.set(metronomeSettings.downbeatSoundOn, forKey: UserDefaultsKeys.downbeat);
-        userDefaults.set(metronomeSettings.backgroundModeOn, forKey: UserDefaultsKeys.background);
         userDefaults.set(metronomeSettings.flipSoundsOn, forKey: UserDefaultsKeys.flipSounds);
         userDefaults.set(metronome.bpm, forKey: UserDefaultsKeys.bpm);
     }
@@ -318,7 +307,6 @@ extension MetronomeVC {
         metronomeSettings.soundOn = userDefaults.bool(forKey: UserDefaultsKeys.sound);
         metronomeSettings.flashOn = userDefaults.bool(forKey: UserDefaultsKeys.flash);
         metronomeSettings.downbeatSoundOn = userDefaults.bool(forKey: UserDefaultsKeys.downbeat);
-        metronomeSettings.backgroundModeOn = userDefaults.bool(forKey: UserDefaultsKeys.background);
         metronomeSettings.flipSoundsOn = userDefaults.bool(forKey: UserDefaultsKeys.flipSounds);
         metronome.bpm = userDefaults.float(forKey: UserDefaultsKeys.bpm);
     }

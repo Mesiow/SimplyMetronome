@@ -13,7 +13,6 @@ import Foundation
 class SettingsViewController : UIViewController {
     let cellIdentifier = "ReusableSettingCell"
     
-    @IBOutlet weak var backNavBar: UINavigationBar!
     @IBOutlet weak var tableView: UITableView!
     
     var delegate: MetronomeVC!
@@ -23,7 +22,6 @@ class SettingsViewController : UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad();
-        backNavBar.standardAppearance = UINavigationBar.appearance().standardAppearance;
         
         loadSettings();
         
@@ -37,11 +35,10 @@ class SettingsViewController : UIViewController {
         settings.append(Setting(img: UIImage(systemName: "flashlight.on.fill")!, name: "Flash Light", color: UIColor.systemYellow, id: 100));
         settings.append(Setting(img: UIImage(systemName: "speaker.wave.2.fill")!, name: "Downbeat Sound", color: UIColor.systemRed, id: 200));
         settings.append(Setting(img: UIImage(systemName: "speaker.1.fill")!, name: "Sound", color: UIColor.systemBlue, id: 300));
-        settings.append(Setting(img: UIImage(systemName: "square.fill.on.square.fill")!, name: "Background Mode", color: UIColor.systemTeal, id: 400));
         settings.append(Setting(img: UIImage(systemName: "flip.horizontal.fill")!, name: "Flip Sounds", color: UIColor.systemGreen, id: 500));
     }
     
-    @IBAction func backButtonPressed(_ sender: UIBarButtonItem) {
+    @IBAction func backButtonPressed(_ sender: Any) {
         dismiss(animated: true, completion: nil);
     }
     
@@ -56,9 +53,6 @@ class SettingsViewController : UIViewController {
            break;
         case 300: //mute
             cell.settingSwitch.isOn = metronomeSettings.soundOn;
-           break;
-        case 400:
-            cell.settingSwitch.isOn = metronomeSettings.backgroundModeOn;
            break;
         case 500:
             cell.settingSwitch.isOn = metronomeSettings.flipSoundsOn;
@@ -81,9 +75,6 @@ class SettingsViewController : UIViewController {
              case 300: //mute
                 delegate.soundEnabled();
                 break;
-             case 400:
-                delegate.backgroundEnabled();
-                break;
             case 500:
                 delegate.flipSoundEnabled();
                 break;
@@ -102,9 +93,6 @@ class SettingsViewController : UIViewController {
                 break;
              case 300: //mute
                 delegate.soundDisabled();
-                break;
-             case 400:
-                delegate.backgroundDisabled();
                 break;
             case 500:
                 delegate.flipSoundDisabled();
